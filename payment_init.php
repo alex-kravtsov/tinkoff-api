@@ -11,16 +11,32 @@ $api = new Tinkoff_API();
 
 $OrderId = !empty($_POST['OrderId']) ? $_POST['OrderId'] : null;
 $CustomerKey = !empty($_POST['CustomerKey']) ? $_POST['CustomerKey'] : null;
+$Email = !empty($_POST['Email']) ? $_POST['Email'] : null;
 $Amount = !empty($_POST['Amount']) ? $_POST['Amount'] : null;
 $Description = !empty($_POST['Description']) ? $_POST['Description'] : null;
 $Recurrent = !empty($_POST['Recurrent']) ? $_POST['Recurrent'] : null;
+
+$Receipt = [
+    'Email' => $Email,
+    'Taxation' => 'osn',
+    'Items' => [
+        [
+            'Name' => "Выписка ЕГРН",
+            'Price' => $Amount,
+            'Quantity' => 1,
+            'Amount' => $Amount,
+            'Tax' => 'none',
+        ],
+    ],
+];
 
 $response = $api->payment_init([
     'OrderId' => $OrderId,
     'CustomerKey' => $CustomerKey,
     'Amount' => $Amount,
     'Description' => $Description,
-    'Recurrent' => $Recurrent,
+    //'Recurrent' => $Recurrent,
+    'Receipt' => $Receipt,
 ]);
 
 if (!$response) {
@@ -30,6 +46,9 @@ if (!$response) {
 $mysqli = new mysqli('localhost', 'test', '', 'test');
 if ($mysqli->connect_errno) {
     die(printf("Connect failed: %s\n", $mysqli->connect_error) );
+}
+if (!$mysqli->set_charset("utf8")) {
+    die(printf("Error loading character set utf8: %s\n", $mysqli->error) );
 }
 
 $table = "`transactions`";

@@ -6,6 +6,9 @@ $mysqli = new mysqli('localhost', 'test', '', 'test');
 if ($mysqli->connect_errno) {
     die(printf("Connect failed: %s\n", $mysqli->connect_error) );
 }
+if (!$mysqli->set_charset("utf8")) {
+    die(printf("Error loading character set utf8: %s\n", $mysqli->error) );
+}
 
 // Get customer
 $columns = "*";
@@ -40,6 +43,7 @@ if (!$mysqli->query($query) ) {
 $TEMPLATE_VARS = [];
 $TEMPLATE_VARS['order_id'] = sprintf("t%d", $mysqli->insert_id);
 $TEMPLATE_VARS['customer_key'] = sprintf("u%d", $customer['id']);
+$TEMPLATE_VARS['email'] = htmlspecialchars($customer['email']);
 $TEMPLATE_VARS['price'] = number_format($price, 2, ".", "");
 $TEMPLATE_VARS['amount'] = $price * 100;
 $TEMPLATE_VARS['description'] = htmlspecialchars($description);
@@ -55,20 +59,20 @@ $mysqli->close();
     </head>
     <body>
         <style>
-            .order-layout {
-                border-collapse: collapse;
-                background: Gainsboro;
-            }
+         .order-layout {
+             border-collapse: collapse;
+             background: Gainsboro;
+         }
 
-            .order-layout th,
-            .order-layout td {
-                padding: 10px;
-            }
+         .order-layout th,
+         .order-layout td {
+             padding: 10px;
+         }
 
-            .order-layout footer td {
-                padding-top: 20px;
-                text-align: right;
-            }
+         .order-layout footer td {
+             padding-top: 20px;
+             text-align: right;
+         }
         </style>
 
         <h1>Тестирование платежей Тинькофф</h1>
@@ -100,6 +104,7 @@ $mysqli->close();
             </table>
             <input type="hidden" name="OrderId" value="<?= $TEMPLATE_VARS['order_id'] ?>" />
             <input type="hidden" name="CustomerKey" value="<?= $TEMPLATE_VARS['customer_key'] ?>" />
+            <input type="hidden" name="Email" value="<?= $TEMPLATE_VARS['email'] ?>" />
             <input type="hidden" name="Description" value="<?= $TEMPLATE_VARS['description'] ?>" />
             <input type="hidden" name="Amount" value="<?= $TEMPLATE_VARS['amount'] ?>" />
             <input type="hidden" name="Recurrent" value="Y" />
