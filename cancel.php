@@ -14,6 +14,7 @@ if ($mysqli->connect_errno) {
     die(printf("Connect failed: %s\n", $mysqli->connect_error) );
 }
 
+$api = new Tinkoff_API();
 $response = $api->payment_cancel([
     'PaymentId' => $PaymentId,
 ]);
