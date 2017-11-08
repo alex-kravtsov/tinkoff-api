@@ -32,4 +32,4 @@ CREATE TABLE `test_customers` (
     `email` VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
-INSERT INTO `test_customers` (`email`) VALUES ('info@gosuslugi24.ru');
+INSERT INTO `test_customers` (`email`) VALUES ('mail@example.com');

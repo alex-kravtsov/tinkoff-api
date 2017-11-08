@@ -81,20 +81,24 @@ $mysqli->close();
         <form method="post" action="payment_init.php">
             <table class="order-layout">
                 <tr>
-                    <th>ID Заказа</th>
+                    <th>ID Заказа*</th>
                     <td><?= $TEMPLATE_VARS['order_id'] ?></td>
                 </tr>
                 <tr>
-                    <th>Описание</th>
+                    <th>Описание*</th>
                     <td><?= $TEMPLATE_VARS['description'] ?></td>
                 </tr>
                 <tr>
-                    <th>Цена</th>
+                    <th>Цена*</th>
                     <td><?= $TEMPLATE_VARS['price'] ?> руб.</td>
                 </tr>
                 <tr>
-                    <th>Включить автоплатёж.</th>
-                    <td><input type="checkbox" checked="checked" disabled="disabled" /></td>
+                    <th>Автоплатёж</th>
+                    <td><input type="checkbox" name="Recurrent" value="Y" /></td>
+                </tr>
+                <tr>
+                    <th>Кассовый чек</th>
+                    <td><input type="checkbox" name="Receipt" value="1" /></td>
                 </tr>
                 <tfoot>
                     <tr>
@@ -107,7 +111,6 @@ $mysqli->close();
             <input type="hidden" name="Email" value="<?= $TEMPLATE_VARS['email'] ?>" />
             <input type="hidden" name="Description" value="<?= $TEMPLATE_VARS['description'] ?>" />
             <input type="hidden" name="Amount" value="<?= $TEMPLATE_VARS['amount'] ?>" />
-            <input type="hidden" name="Recurrent" value="Y" />
         </form>
     </body>
 </html>

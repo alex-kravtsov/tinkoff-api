@@ -7,6 +7,8 @@ ini_set('display_errors', '1');
 
 include "tinkoff_api.php";
 
+$RebillId = '1510047881330';
+
 $mysqli = new mysqli('localhost', 'test', '', 'test');
 if ($mysqli->connect_errno) {
     die(printf("Connect failed: %s\n", $mysqli->connect_error) );
@@ -52,7 +54,6 @@ if (!$mysqli->query($query) ) {
 }
 
 $PaymentId = $response->PaymentId;
-$RebillId = '1510047881330';
 
 $response = $api->payment_charge([
     'PaymentId' => $PaymentId,

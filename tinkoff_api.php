@@ -86,6 +86,28 @@ class Tinkoff_API {
     }
 
     /**
+     * Cancels payment
+     */
+    function payment_cancel($params=[]){
+        $this->_url = self::REST_URL . "/Cancel";
+        $this->_method = "POST";
+        $valid_params = [
+            'PaymentId', // Number(20) required
+            'Amount', // Number(10)
+            'IP', // String(40) Client IP
+            'Receipt', // JSON Object
+        ];
+
+        $this->_trailer = [];
+        if (!empty($params['Receipt']) ) {
+            $this->_trailer['Receipt'] = $params['Receipt'];
+            unset($params['Receipt']);
+        }
+
+        return $this->_api_request($valid_params, $params);
+    }
+
+    /**
      * Begins ordinary or first recurrent payment
      */
     function payment_init($params=[]){

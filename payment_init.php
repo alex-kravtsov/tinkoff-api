@@ -15,29 +15,36 @@ $Email = !empty($_POST['Email']) ? $_POST['Email'] : null;
 $Amount = !empty($_POST['Amount']) ? $_POST['Amount'] : null;
 $Description = !empty($_POST['Description']) ? $_POST['Description'] : null;
 $Recurrent = !empty($_POST['Recurrent']) ? $_POST['Recurrent'] : null;
+$Receipt = !empty($_POST['Receipt']) ? $_POST['Receipt'] : null;
 
-$Receipt = [
-    'Email' => $Email,
-    'Taxation' => 'osn',
-    'Items' => [
-        [
-            'Name' => "Выписка ЕГРН",
-            'Price' => $Amount,
-            'Quantity' => 1,
-            'Amount' => $Amount,
-            'Tax' => 'none',
-        ],
-    ],
-];
-
-$response = $api->payment_init([
+$params = [
     'OrderId' => $OrderId,
     'CustomerKey' => $CustomerKey,
     'Amount' => $Amount,
     'Description' => $Description,
-    //'Recurrent' => $Recurrent,
-    'Receipt' => $Receipt,
-]);
+];
+
+if ($Recurrent) {
+    $params['Recurrent'] = 'Y';
+}
+
+if ($Receipt) {
+    $params['Receipt'] = [
+        'Email' => $Email,
+        'Taxation' => 'osn',
+        'Items' => [
+            [
+                'Name' => "Наменование товара",
+                'Price' => $Amount,
+                'Quantity' => 1,
+                'Amount' => $Amount,
+                'Tax' => 'none',
+            ],
+        ],
+    ];
+}
+
+$response = $api->payment_init($params);
 
 if (!$response) {
     die($api->error);
