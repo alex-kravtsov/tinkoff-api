@@ -42,6 +42,7 @@ if ($Receipt) {
             ],
         ],
     ]);
+    $params['DATA'] = "Email={$Email}";
 }
 
 $response = $api->payment_init($params);
