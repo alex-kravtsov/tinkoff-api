@@ -29,7 +29,7 @@ if ($Recurrent) {
 }
 
 if ($Receipt) {
-    $params['Receipt'] = json_encode([
+    $params['Receipt'] = [
         'Email' => $Email,
         'Taxation' => 'osn',
         'Items' => [
@@ -41,8 +41,8 @@ if ($Receipt) {
                 'Tax' => 'none',
             ],
         ],
-    ]);
-    $params['DATA'] = "Email={$Email}";
+    ];
+    $params['DATA'] = ['Email' => $Email];
 }
 
 $response = $api->payment_init($params);
