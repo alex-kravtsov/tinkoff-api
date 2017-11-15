@@ -7,7 +7,7 @@ ini_set('display_errors', '1');
 
 include "tinkoff_api.php";
 
-$RebillId = '1510047881330';
+$RebillId = '';
 
 $mysqli = new mysqli('localhost', 'test', '', 'test');
 if ($mysqli->connect_errno) {
@@ -67,7 +67,7 @@ if (!$response) {
 if ($response->Success) {
     $mysqli = new mysqli('localhost', 'test', '', 'test');
     $table_references = "`transactions`";
-    $set = "`completed_at` = NOW()";
+    $set = "`updated_at` = NOW()";
     $set .= !empty($response->Status) ? ", `Status` = '{$response->Status}'" : "";
     $query = "UPDATE {$table_references} SET {$set} WHERE {$where}";
     $mysqli->query($query);

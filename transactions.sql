@@ -13,7 +13,7 @@ CREATE TABLE `transactions` (
     `ExpDate` VARCHAR(255) NULL COMMENT 'Card expiration date.',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `initialized_at` TIMESTAMP NULL,
-    `completed_at` TIMESTAMP NULL
+    `updated_at` TIMESTAMP NULL
 ) ENGINE=InnoDB DEFAULT CHARACTER SET utf8;
 
 DROP TABLE IF EXISTS `test_orders`;

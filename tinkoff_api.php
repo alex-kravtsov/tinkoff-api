@@ -7,15 +7,31 @@ define('TINKOFF_SECRET_KEY', getenv('TINKOFF_SECRET_KEY') );
 
 class Tinkoff_API {
     const REST_URL = "https://securepay.tinkoff.ru/rest";
+    const V2_URL = "https://securepay.tinkoff.ru/v2";
 
     public $error = null;
 
     private $_url = null;
     private $_method = null;
+    private $_format = "urlencoded"; // urlencoded|json
     private $_request = null;
     private $_trailer = null;
     private $_raw_response = null;
     private $_response = null;
+
+    /**
+     * Resends undelivered notifications
+     */
+    public function resend($params=[]){
+        $this->_url = self::REST_URL . "/Resend";
+        $this->_method = "POST";
+        //$this->_format = "json";
+        $valid_params = [
+            'PaymentId', // Number(20)
+            'NotificationType', // String
+        ];
+        return $this->_api_request($valid_params, $params);
+    }
 
     /**
      * Gets customer card list associated with the terminal
@@ -75,8 +91,9 @@ class Tinkoff_API {
      * Performs subsequent recurrent payment
      */
     function payment_charge($params=[]){
-        $this->_url = self::REST_URL . "/Charge";
+        $this->_url = self::V2_URL . "/Charge";
         $this->_method = "POST";
+        $this->_format = 'json';
         $valid_params = [
             'PaymentId', // Number(20) required
             'IP', // String(40) Client IP
@@ -89,8 +106,9 @@ class Tinkoff_API {
      * Cancels payment
      */
     function payment_cancel($params=[]){
-        $this->_url = self::REST_URL . "/Cancel";
+        $this->_url = self::V2_URL . "/Cancel";
         $this->_method = "POST";
+        $this->_format = "json";
         $valid_params = [
             'PaymentId', // Number(20) required
             'Amount', // Number(10)
@@ -111,8 +129,9 @@ class Tinkoff_API {
      * Begins ordinary or first recurrent payment
      */
     function payment_init($params=[]){
-        $this->_url = self::REST_URL . "/Init";
+        $this->_url = self::V2_URL . "/Init";
         $this->_method = "POST";
+        $this->_format = "json";
         $valid_params = [
             'Amount', // Number(10) required
             'OrderId', // String(50) required
@@ -164,11 +183,6 @@ class Tinkoff_API {
     }
 
     private function _get_response(){
-        if (empty($this->_request) ){
-            $this->error = "Empty request parameters.";
-            return false;
-        }
-
         $this->_request['TerminalKey'] = TINKOFF_TERMINAL_KEY;
         $this->_sign_request();
 
@@ -210,15 +224,23 @@ class Tinkoff_API {
     private function _do_request(){
         $postfields = "";
         if ($this->_method == "POST") {
-            foreach ($this->_request as $key=>$value) {
-                $postfields .= !empty($postfields) ? '&' : '';
-                $postfields .= sprintf("%s=%s", $key, rawurlencode($value) );
+            if ($this->_format == "urlencoded") {
+                foreach ($this->_request as $key=>$value) {
+                    $postfields .= !empty($postfields) ? '&' : '';
+                    $postfields .= sprintf("%s=%s", $key, rawurlencode($value) );
+                }
+            }
+            elseif ($this->_format == "json") {
+                $postfields = \json_encode($this->_request);
             }
         }
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->_url);
         if ($this->_method == "POST") {
+            if ($this->_format == "json") {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-type: application/json"]);
+            }
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
         }
