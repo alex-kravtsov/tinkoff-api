@@ -26,7 +26,7 @@ if (!$response) {
 if ($response->Success) {
     $mysqli = new mysqli('localhost', 'test', '', 'test');
     $table_references = "`transactions`";
-    $set = "`completed_at` = NOW()";
+    $set = "`updated_at` = NOW()";
     $set .= !empty($response->Status) ? ", `Status` = '{$response->Status}'" : "";
     $where = "`PaymentId` = {$PaymentId}";
     $query = "UPDATE {$table_references} SET {$set} WHERE {$where}";

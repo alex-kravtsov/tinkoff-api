@@ -49,7 +49,7 @@ $ExpDate = !empty($input['ExpDate']) ? $input['ExpDate'] : null;
 
 $mysqli = new mysqli('localhost', 'test', '', 'test');
 $table_references = "`transactions`";
-$set = "`completed_at` = NOW()";
+$set = "`updated_at` = NOW()";
 $set .= $Status ? ", `Status` = '{$Status}'" : "";
 $set .= $RebillId ? ", `RebillId` = '{$RebillId}'" : "";
 $set .= $CardId ? ", `CardId` = '{$CardId}'" : "";

@@ -91,8 +91,9 @@ class Tinkoff_API {
      * Performs subsequent recurrent payment
      */
     function payment_charge($params=[]){
-        $this->_url = self::REST_URL . "/Charge";
+        $this->_url = self::V2_URL . "/Charge";
         $this->_method = "POST";
+        $this->_format = 'json';
         $valid_params = [
             'PaymentId', // Number(20) required
             'IP', // String(40) Client IP
